@@ -7,7 +7,7 @@ This program uses the ShowTix4U Transaction Search API to download transactions 
 To use the program, first log in to ShowTix4U and use Chrome's developer tools to extract the target event's ID and the authorization token contained in the `connect.sid` cookie. Then, run the program like so:
 
 ```bash
-go run main.go --event <eventId> --token <authToken>
+go run main.go --event $EVENT_ID --token $TOKEN
 ```
 
 The program will print CSV-formatted line items to STDOUT.
