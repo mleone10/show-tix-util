@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Response struct {
@@ -128,16 +129,17 @@ func parseCustomer(c Customer) []LineItem {
 
 func parseTransaction(c Customer, t Transaction) []LineItem {
 	ls := []LineItem{}
+	date := formatDateString(t.CreationDate)
 
 	if t.Donation != 0 {
 		l := LineItem{
 			TransactionId: t.Id,
 			Customer:      fmt.Sprintf("%v, %v", strings.TrimSpace(c.LastName), strings.TrimSpace(c.FirstName)),
-			ReceiptDate:   t.CreationDate,
+			ReceiptDate:   date,
 			DepositTo:     "200.100 Undeposited Funds",
 			PaymentMethod: t.TenderType,
 			Memo:          fmt.Sprintf("Order: %v", t.Id),
-			LineItemDate:  t.CreationDate,
+			LineItemDate:  date,
 			LineItem:      "Contributed Income:Unrestricted Contributions",
 			Amount:        t.Donation,
 		}
@@ -152,11 +154,11 @@ func parseTransaction(c Customer, t Transaction) []LineItem {
 		ls = append(ls, LineItem{
 			TransactionId: t.Id,
 			Customer:      fmt.Sprintf("%v, %v", strings.TrimSpace(c.LastName), strings.TrimSpace(c.FirstName)),
-			ReceiptDate:   t.CreationDate,
+			ReceiptDate:   date,
 			DepositTo:     "200.100 Undeposited Funds",
 			PaymentMethod: t.TenderType,
 			Memo:          fmt.Sprintf("Order: %v", t.Id),
-			LineItemDate:  t.CreationDate,
+			LineItemDate:  date,
 			LineItem:      "Program Income:BO Income",
 			Amount:        ticket.Price,
 		})
@@ -164,11 +166,11 @@ func parseTransaction(c Customer, t Transaction) []LineItem {
 			ls = append(ls, LineItem{
 				TransactionId: t.Id,
 				Customer:      fmt.Sprintf("%v, %v", strings.TrimSpace(c.LastName), strings.TrimSpace(c.FirstName)),
-				ReceiptDate:   t.CreationDate,
+				ReceiptDate:   date,
 				DepositTo:     "200.100 Undeposited Funds",
 				PaymentMethod: t.TenderType,
 				Memo:          fmt.Sprintf("Order: %v", t.Id),
-				LineItemDate:  t.CreationDate,
+				LineItemDate:  date,
 				LineItem:      "Ticketing Fees",
 				Amount:        -1.5,
 			})
@@ -176,6 +178,16 @@ func parseTransaction(c Customer, t Transaction) []LineItem {
 	}
 
 	return ls
+}
+
+func formatDateString(date string) string {
+	t, err := time.Parse("2006-01-02T15:04:05.000Z", date)
+	if err != nil {
+		log.Fatalf("Failed to parse date string: %v", err)
+	}
+
+	return t.Format("2006-01-02")
+
 }
 
 func printLineItems(ls []LineItem) {

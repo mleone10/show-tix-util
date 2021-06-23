@@ -11,3 +11,7 @@ go run main.go --event $EVENT_ID --token $TOKEN
 ```
 
 The program will print CSV-formatted line items to STDOUT.
+
+## To Do
+
+- ShowTix4U currently charges a $1.50 fee for comp tickets. This means that transactions containing comp tickets may end up with negative net totals, which Quickbooks does not allow. Those transactions must be instead registered as expenses and imported separately.
